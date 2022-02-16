@@ -1,0 +1,95 @@
+   - name: Configurations VM
+     hosts: test1
+     become: yes
+     become_method: sudo
+
+     tasks:
+       - name: update packages
+         apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+       - name: curl
+         apt: 
+           name: "{{ item }}"
+           update_cache: yes 
+         loop:
+           - vim  
+
+       - name: start ufw
+         community.general.ufw:
+                 state: enabled
+                 policy: allow  
+       - name: activate ports
+         ufw:
+           rule: allow
+           port: 80,8080,1834
+           proto: tcp
+
+       - name: change ssh file1
+         lineinfile: dest=/etc/ssh/sshd_config regexp='^#Port 22' line='Port 1834'
+       - name: change ssh file2
+         lineinfile: dest=/etc/ssh/sshd_config regexp='^#PubkeyAuthentication yes' line='PubkeyAuthentication yes'
+
+         #- name: create user1
+         # user:
+                 # name: Webdeveloper
+           # password: 'S52we9V6QTp7'
+           # shell: /bin/bash
+           # append: yes
+           # - name: create user2
+          # user:
+                  # name: Devopsengineer
+            #password: 'dHy6sKGHsj2T'
+            # shell: /bin/bash
+            # append: yes
+            # - name: create user3
+          #  user:
+                  # name: Projectmanager
+            # password: 'oP92ugMSaCbe'
+            # shell: /bin/bash
+            # append: yes
+            # - name: change authorized key on public
+          # authorized_key:
+                  # user: user1,user2,user3
+                  # state: present
+                  #                  key "{{ lookup('file', '/home/lnxcfg/.ssh
+         #DOCKER INSTALL                  
+       - name: install aptitude using apt
+         apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+       - name: install required system packages
+         apt: name={{ item }} state=latest update_cache=yes
+         loop: [ 'apt-transport-https', 'ca-certificates', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools'] 
+       - name: Add docker gpg apt key
+         apt_key:
+              url: https://download.docker.com/linux/ubuntu/gpg
+              state: present
+       - name: Configute docker repo
+         apt_repository:
+                 repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+                 state: present
+                 update_cache: yes
+       - name: update apt and install docker-ce
+         apt: update_cache=yes name=docker-ce state=latest
+       - name: install docker compose 
+         get_url:
+                 url: https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64
+                 dest: /usr/local/bin/docker-compose
+                 mode: 'u+x,g+x'
+         #Create dir and cp files
+       - name: create directory
+         file: path=/skillcloud-nginx state=directory
+       - name: copy files
+         copy:
+                 src: /gitfiles/
+                 dest: /skillcloud-nginx/
+                 mode: '0755' 
+       - name: restart sshd
+         service:
+                 name: sshd
+                 state: restarted
+       - name: restart ufw
+         community.general.ufw:
+                 state: reloaded
+       - name: reboot host
+         command: shutdown -r now "Ansible reboot"
+         async: 0
+         poll: 0
+
