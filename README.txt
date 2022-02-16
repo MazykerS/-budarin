@@ -13,7 +13,7 @@ ssh-copy-id root@10.0.2.13
 Затем нужно установить зависимости для ANSIBLE
 ansible-galaxy collection install community.general
 
-Все файлы Jeniston 14 я выгрузил с помощью git clone в папку /gitfiles
+Все файлы Jeniston14 я выгрузил с помощью git clone в папку /gitfiles
 
 После чего можно запсукать скрипт
 ansible-playbook "путь к файлу"
