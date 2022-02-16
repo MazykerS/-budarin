@@ -23,8 +23,8 @@
            port: 80,8080,1834
            proto: tcp
 
-       - name: change ssh file1
-         lineinfile: dest=/etc/ssh/sshd_config regexp='^#Port 22' line='Port 1834'
+       #- name: change ssh file1
+       #  lineinfile: dest=/etc/ssh/sshd_config regexp='^#Port 22' line='Port 1834'
        - name: change ssh file2
          lineinfile: dest=/etc/ssh/sshd_config regexp='^#PubkeyAuthentication yes' line='PubkeyAuthentication yes'
          
