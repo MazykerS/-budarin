@@ -27,30 +27,7 @@
          lineinfile: dest=/etc/ssh/sshd_config regexp='^#Port 22' line='Port 1834'
        - name: change ssh file2
          lineinfile: dest=/etc/ssh/sshd_config regexp='^#PubkeyAuthentication yes' line='PubkeyAuthentication yes'
-
-         #- name: create user1
-         # user:
-                 # name: Webdeveloper
-           # password: 'S52we9V6QTp7'
-           # shell: /bin/bash
-           # append: yes
-           # - name: create user2
-          # user:
-                  # name: Devopsengineer
-            #password: 'dHy6sKGHsj2T'
-            # shell: /bin/bash
-            # append: yes
-            # - name: create user3
-          #  user:
-                  # name: Projectmanager
-            # password: 'oP92ugMSaCbe'
-            # shell: /bin/bash
-            # append: yes
-            # - name: change authorized key on public
-          # authorized_key:
-                  # user: user1,user2,user3
-                  # state: present
-                  #                  key "{{ lookup('file', '/home/lnxcfg/.ssh
+         
          #DOCKER INSTALL                  
        - name: install aptitude using apt
          apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -88,8 +65,5 @@
        - name: restart ufw
          community.general.ufw:
                  state: reloaded
-       - name: reboot host
-         command: shutdown -r now "Ansible reboot"
-         async: 0
-         poll: 0
+     
 
